@@ -7,6 +7,7 @@ export default class ProgressiveImage extends Component {
     this.state = {
       imageOpacity: new Animated.Value(0),
       thumbnailOpacity: new Animated.Value(0),
+      load:false,
     }
   }
 
@@ -19,6 +20,7 @@ export default class ProgressiveImage extends Component {
   }
 
   onLoadImage() {
+    this.setState({load:true})
     Animated.timing(this.state.imageOpacity, {
       toValue: 1,
       duration: this.props.imageFadeDuration,
@@ -30,24 +32,42 @@ export default class ProgressiveImage extends Component {
     const { placeholderResizeMode, thumbnailResizeMode, imageResizeMode } = this.props;
     return (
       <View style={this.props.style}>
-        <Image
-          resizeMode={placeholderResizeMode}
-          style={[styles.image, this.props.style]}
-          source={this.props.placeHolderSource}
-        />
-        <Animated.Image
-          resizeMode={thumbnailResizeMode}
-          style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
-          source={this.props.thumbnailSource}
-          onLoad={() => this.onLoadThumbnail()}
-          blurRadius={this.props.thumbnailBlurRadius}
-        />
-        <Animated.Image
-          resizeMode={imageResizeMode}
-          style={[styles.image, { opacity: this.state.imageOpacity }, this.props.style]}
-          source={this.props.imageSource}
-          onLoad={() => this.onLoadImage()}
-        />
+        {
+          this.state.load == false ?
+          <View>
+            <Image
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.placeHolderSource}
+            />
+            <Animated.Image
+              resizeMode={thumbnailResizeMode}
+              style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
+              source={this.props.thumbnailSource}
+              onLoad={() => this.onLoadThumbnail()}
+              blurRadius={this.props.thumbnailBlurRadius}
+            />
+            <Animated.Image
+              resizeMode={imageResizeMode}
+              style={[styles.image, { opacity: this.state.imageOpacity }, this.props.style]}
+              source={this.props.imageSource}
+              onLoad={() => this.onLoadImage()}
+            />
+          </View>
+          :
+          <View>
+            <Image
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.placeHolderSource}
+            />
+            <Image
+              resizeMode={imageResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.imageSource}
+            />
+          </View>
+        }
       </View>
     )
   }
