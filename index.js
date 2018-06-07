@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import { Animated, View, Image, StyleSheet } from 'react-native'
+import { Animated, View, Image, StyleSheet,Platform } from 'react-native'
+import FastImage from 'react-native-fast-image'
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export default class ProgressiveImage extends Component {
   constructor(props) {
@@ -30,11 +32,23 @@ export default class ProgressiveImage extends Component {
     const { placeholderResizeMode, thumbnailResizeMode, imageResizeMode } = this.props;
     return (
       <View style={this.props.style}>
-        <Image
-          resizeMode={placeholderResizeMode}
-          style={[styles.image, this.props.stylePlaceHolder]}
-          source={this.props.placeHolderSource}
-        />
+        {
+          Platform.OS == 'android' ?
+          this.props.imageSource.uri ?
+          <View/>
+          :
+          <FastImage
+            resizeMode={placeholderResizeMode}
+            style={[styles.image, this.props.stylePlaceHolder]}
+            source={this.props.placeHolderSource}
+          />
+          :
+          <Image
+            resizeMode={placeholderResizeMode}
+            style={[styles.image, this.props.stylePlaceHolder]}
+            source={this.props.placeHolderSource}
+          />
+        }
         <Animated.Image
           resizeMode={thumbnailResizeMode}
           style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
@@ -81,7 +95,7 @@ ProgressiveImage.propTypes = {
 
 ProgressiveImage.defaultProps = {
   thumbnailFadeDuration: 250,
-  imageFadeDuration: 3000,
+  imageFadeDuration: 2500,
   thumbnailBlurRadius: 5,
   onLoadThumbnail: Function.prototype,
   onLoadImage: Function.prototype,
