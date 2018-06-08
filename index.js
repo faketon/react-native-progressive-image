@@ -34,9 +34,6 @@ export default class ProgressiveImage extends Component {
       <View style={this.props.style}>
         {
           Platform.OS == 'android' ?
-          this.props.imageSource.uri ?
-          <View/>
-          :
           <FastImage
             resizeMode={placeholderResizeMode}
             style={[styles.image, this.props.stylePlaceHolder]}
@@ -49,7 +46,21 @@ export default class ProgressiveImage extends Component {
             source={this.props.placeHolderSource}
           />
         }
-        <Animated.Image
+        {
+          Platform.OS == 'android' ?
+          <FastImage
+            resizeMode={imageResizeMode}
+            style={[styles.image, this.props.style]}
+            source={this.props.imageSource}
+          />
+          :
+          <Image
+            resizeMode={imageResizeMode}
+            style={[styles.image, this.props.style]}
+            source={this.props.imageSource}
+          />
+        }
+        {/* <Animated.Image
           resizeMode={thumbnailResizeMode}
           style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
           source={this.props.thumbnailSource}
@@ -61,7 +72,7 @@ export default class ProgressiveImage extends Component {
           style={[styles.image, { opacity: this.state.imageOpacity }, this.props.style]}
           source={this.props.imageSource}
           onLoad={() => this.onLoadImage()}
-        />
+        /> */}
       </View>
     )
   }
