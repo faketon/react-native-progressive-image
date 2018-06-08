@@ -30,51 +30,72 @@ export default class ProgressiveImage extends Component {
 
   render() {
     const { placeholderResizeMode, thumbnailResizeMode, imageResizeMode } = this.props;
-    return (
-      <View style={this.props.style}>
-        {
-          Platform.OS == 'android' ?
-          <FastImage
-            resizeMode={placeholderResizeMode}
-            style={[styles.image, this.props.stylePlaceHolder]}
-            source={this.props.placeHolderSource}
+    if (this.props.type == 'progressive') {
+      return (
+        <View style={this.props.style}>
+          {
+            Platform.OS == 'android' ?
+            <FastImage
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.stylePlaceHolder]}
+              source={this.props.placeHolderSource}
+            />
+            :
+            <Image
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.stylePlaceHolder]}
+              source={this.props.placeHolderSource}
+            />
+          }
+          <Animated.Image
+            resizeMode={thumbnailResizeMode}
+            style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
+            source={this.props.thumbnailSource}
+            onLoad={() => this.onLoadThumbnail()}
+            blurRadius={this.props.thumbnailBlurRadius}
           />
-          :
-          <Image
-            resizeMode={placeholderResizeMode}
-            style={[styles.image, this.props.stylePlaceHolder]}
-            source={this.props.placeHolderSource}
-          />
-        }
-        {
-          Platform.OS == 'android' ?
-          <FastImage
+          <Animated.Image
             resizeMode={imageResizeMode}
-            style={[styles.image, this.props.style]}
+            style={[styles.image, { opacity: this.state.imageOpacity }, this.props.style]}
             source={this.props.imageSource}
+            onLoad={() => this.onLoadImage()}
           />
-          :
-          <Image
-            resizeMode={imageResizeMode}
-            style={[styles.image, this.props.style]}
-            source={this.props.imageSource}
-          />
-        }
-        {/* <Animated.Image
-          resizeMode={thumbnailResizeMode}
-          style={[styles.image, { opacity: this.state.thumbnailOpacity }, this.props.style]}
-          source={this.props.thumbnailSource}
-          onLoad={() => this.onLoadThumbnail()}
-          blurRadius={this.props.thumbnailBlurRadius}
-        />
-        <Animated.Image
-          resizeMode={imageResizeMode}
-          style={[styles.image, { opacity: this.state.imageOpacity }, this.props.style]}
-          source={this.props.imageSource}
-          onLoad={() => this.onLoadImage()}
-        /> */}
-      </View>
-    )
+        </View>
+      )
+    }else {
+      return (
+        <View style={this.props.style}>
+          {
+            Platform.OS == 'android' ?
+            <FastImage
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.stylePlaceHolder]}
+              source={this.props.placeHolderSource}
+            />
+            :
+            <Image
+              resizeMode={placeholderResizeMode}
+              style={[styles.image, this.props.stylePlaceHolder]}
+              source={this.props.placeHolderSource}
+            />
+          }
+          {
+            Platform.OS == 'android' ?
+            <FastImage
+              resizeMode={imageResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.imageSource}
+            />
+            :
+            <Image
+              resizeMode={imageResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.imageSource}
+            />
+          }
+        </View>
+      )
+    }
   }
 }
 
@@ -113,4 +134,5 @@ ProgressiveImage.defaultProps = {
   placeholderResizeMode: 'cover',
   thumbnailResizeMode: 'cover',
   imageResizeMode: 'cover',
+  type:'progressive',
 }
