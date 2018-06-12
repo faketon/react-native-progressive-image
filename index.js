@@ -81,7 +81,14 @@ export default class ProgressiveImage extends Component {
           }
           {
             Platform.OS == 'android' ?
+            this.props.image_tag == 'fastimage' ?
             <FastImage
+              resizeMode={imageResizeMode}
+              style={[styles.image, this.props.style]}
+              source={this.props.imageSource}
+            />
+            :
+            <Image
               resizeMode={imageResizeMode}
               style={[styles.image, this.props.style]}
               source={this.props.imageSource}
